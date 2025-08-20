@@ -52,6 +52,22 @@ sealed class MidiEvent(open val absoluteTick: Long) {
             val bpm: Double get() = MINUTE_TO_MICROSECONDS / microsecondsPerQuarterNote
         }
 
+        /**
+         * 拍号事件 (Meta-Event 0x58)。
+         *
+         * @property numerator 拍号的分子。
+         * @property denominator 拍号的分母 (2^n)
+         * @property clocksPerTick 每个节拍器滴答声中的 MIDI 时钟数，通常为 24。
+         * @property notesPer24Clocks 每个 MIDI 四分音符（24个MIDI时钟）中的 32 分音符数量，通常为 8。
+         */
+        data class TimeSignature(
+            val numerator: Int,
+            val denominator: Int,
+            val clocksPerTick: Int = 24,
+            val notesPer24Clocks: Int = 8,
+            override val absoluteTick: Long
+        ) : Meta(absoluteTick)
+
         data class TrackName(
             val name: String,
             override val absoluteTick: Long
